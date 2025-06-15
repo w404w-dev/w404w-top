@@ -1,55 +1,61 @@
 #!/bin/bash
 
-echo "🔧 神域の入口、ただいま構築中やで…"
+echo "🔧 神域 Altar を構築中..."
 
 TARGET=~/ダウンロード/altar_ui_fixed
 mkdir -p "$TARGET"
 cd "$TARGET" || exit 1
 
+# index.html
 cat <<EOF > index.html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>w404w - 神域</title>
+  <title>Altar - 神域</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="logo">w404w</div>
-  <div class="user-icon" title="アカウント"></div>
+  <div class="logo">Altar</div>
+
+  <div class="user-icon" title="アカウント">👤</div>
   <div class="lang-icon" title="言語">🌐</div>
+  <div class="chat-icon" title="語部GPT">💬</div>
+  <div class="settings-icon" title="設定">⚙️</div>
+
   <main>
     <div class="search-container">
       <div class="search-box">
-        <span class="search-icon">🔍</span>
         <input type="text" placeholder="神検索" class="search-input"/>
         <button class="enter-button" title="入口">🌀</button>
       </div>
     </div>
   </main>
-  <footer>
-    <div class="settings-icon" title="設定">⚙️</div>
-    <button class="music-button" id="musicButton" title="神秘の音">🎵</button>
-  </footer>
+
+  <div class="music-button" id="musicButton" title="神秘の音">🎵</div>
+
   <script src="script.js"></script>
 </body>
 </html>
 EOF
 
+# style.css
 cat <<EOF > style.css
 body {
   background: black;
-  color: white;
-  font-family: sans-serif;
+  color: #00ff66;
+  font-family: "Courier New", monospace;
   margin: 0;
   padding: 0;
-  text-align: center;
   overflow: hidden;
 }
 .logo {
-  font-size: 3em;
-  margin-top: 50px;
+  font-size: 3.5em;
+  margin-top: 30px;
+  text-align: center;
+  color: #00ff66;
+  text-shadow: 0 0 10px #00ff66;
 }
 .search-container {
   position: absolute;
@@ -73,10 +79,6 @@ body {
   padding: 10px;
   border-radius: 25px;
 }
-.search-icon {
-  margin-right: 10px;
-  font-size: 1.2em;
-}
 .enter-button {
   background: #444;
   color: white;
@@ -88,25 +90,41 @@ body {
   margin-left: 10px;
   cursor: pointer;
 }
-.music-button {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-}
-.settings-icon {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-}
-.user-icon, .lang-icon, .chat-icon {
+.user-icon, .lang-icon, .chat-icon, .settings-icon {
   position: fixed;
   top: 10px;
+  width: 36px;
+  height: 36px;
+  font-size: 1.2em;
+  text-align: center;
+  line-height: 36px;
+  background-color: #222;
+  color: white;
+  border-radius: 50%;
 }
-.user-icon { right: 60px; width: 24px; height: 24px; background: gray; border-radius: 50%; }
-.lang-icon { right: 30px; }
-.chat-icon { right: 100px; }
+.user-icon { right: 120px; }
+.lang-icon { right: 80px; }
+.settings-icon { right: 40px; }
+.chat-icon {
+  left: 20px;
+  top: calc(50% - 18px);
+}
+.music-button {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5em;
+  opacity: 0;
+  animation: floatNote 10s infinite;
+}
+@keyframes floatNote {
+  0%, 90%, 100% { opacity: 0; transform: translate(-50%, 20px); }
+  95% { opacity: 1; transform: translate(-50%, -10px); }
+}
 EOF
 
+# script.js
 cat <<EOF > script.js
 const musicButton = document.getElementById('musicButton');
 const bgms = ['bgm1.mp3', 'bgm3.mp3'];
@@ -125,8 +143,11 @@ musicButton.addEventListener('click', () => {
 });
 EOF
 
+# BGMコピー
 cp ~/ダウンロード/altar_ui/bgm1.mp3 . 2>/dev/null
 cp ~/ダウンロード/altar_ui/bgm3.mp3 . 2>/dev/null
 
-echo "🚀 起動完了！ http://localhost:8080 を開いて確認してや！"
+# サーバー起動
+echo "🚀 Altar 完成！ブラウザで http://localhost:8080 を開いてくれ！"
 python3 -m http.server 8080
+
